@@ -34,21 +34,23 @@ function doGet(e) {
     var template = HtmlService.createTemplateFromFile("TestHtmlHost");
     
     var propScriptID = "";
+    var scriptUrl = "";
     
     if (_developerMode_) {
       
       //In develope mode there is a different URL and script ID
       
       //propScriptID = PropertiesService.getScriptProperties().getProperty("propDevScriptID");
-      //template.scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/dev";
+      //scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/dev";
     } else {
       
       //In normale mode there is a different URL and script ID
       
       //propScriptID = PropertiesService.getScriptProperties().getProperty("propLiveScriptID");
-      //template.scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
+      //scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
     }
     template.developerMode = _developerMode_;
+    template.scriptUrl = scriptUrl;
     
     var html = template.evaluate();
     return html;
