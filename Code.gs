@@ -10,6 +10,21 @@ function onFormSubmit(e)
     }
 }
 
+function testFetch()
+{
+  try {
+    var par = {};
+    par.action = "fetch";
+    
+    var p = {};
+    p.parameter = par;
+    
+    doGet(p);
+  } catch(e) {
+    logException(e);
+  }
+}
+
 function doGet(e) {
   
   try {
@@ -18,8 +33,6 @@ function doGet(e) {
     **
     ** Developer mode has a different script ID and URL than the normal one
     ** 
-    ** Published script 
-    **
     */
     var _developerMode_ = true;
     
@@ -29,31 +42,64 @@ function doGet(e) {
       Logger.log("Normal mode");
     }
     
-    // There is no op/action, so render the entire HTML page
+    /* what to do
+    **
+    ** The action can be one of these: 'fetch'
+    **
+    */
+    var op = e.parameter.action;
     
-    var template = HtmlService.createTemplateFromFile("TestHtmlHost");
+    Logger.log("In doGet");
     
-    var propScriptID = "";
-    var scriptUrl = "";
-    
-    if (_developerMode_) {
+    if (op) {
       
-      //In develope mode there is a different URL and script ID
+      Logger.log("Operation is " + op);
       
-      //propScriptID = PropertiesService.getScriptProperties().getProperty("propDevScriptID");
-      //scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/dev";
+      if (op == 'fetch') {
+        
+        var ds = fetchItems();
+        
+        Logger.log("DataSet built");
+        
+        var output  = ContentService.createTextOutput();
+        
+        output.setContent(JSON.stringify(ds));
+        output.setMimeType(ContentService.MimeType.JSON);
+        
+        return output;
+      }
+      
     } else {
       
-      //In normale mode there is a different URL and script ID
+      // There is no op/action, so render the entire HTML page
       
-      //propScriptID = PropertiesService.getScriptProperties().getProperty("propLiveScriptID");
-      //scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
-    }
-    template.developerMode = _developerMode_;
-    template.scriptUrl = scriptUrl;
+      Logger.log("There is no op/action, so render the entire HTML page");
+      
     
-    var html = template.evaluate();
-    return html;
+      var template = HtmlService.createTemplateFromFile("TestHtmlHost");
+      
+      var propScriptID = "";
+      var scriptUrl = "";
+      
+      if (_developerMode_) {
+        
+        //In develope mode there is a different URL and script ID
+        
+        propScriptID = PropertiesService.getScriptProperties().getProperty("propDevScriptID");
+        scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/dev";
+      } else {
+        
+        //In normale mode there is a different URL and script ID
+        
+        propScriptID = PropertiesService.getScriptProperties().getProperty("propLiveScriptID");
+        //scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
+      }
+      template.developerMode = _developerMode_;
+      template.scriptUrl = scriptUrl;
+      
+      var html = template.evaluate();
+      return html;
+    }
   } catch(e) {
     logException(e);
   }

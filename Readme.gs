@@ -1,4 +1,9 @@
-// Reservation Sheet ID = 1DINbzvJkETop5xb8sdiT6Z4WVy7WQmB6QVb9cV606QQ
+// Reservation Sheet ID = <propLiveDataSpreadsheetID>
+// Live script URL: https://script.google.com/macros/s/<propLiveScriptID>/exec
+// Live script ID: <propLiveScriptID>
+// Dev script URL: https://script.google.com/macros/s/<propDevScriptID>/dev
+// Dev script ID: <propDevScriptID>
+// Executable API: MaXKv1Y9EKq_uH_oGSum4YPVtukfi2slr
 
 /*
 BetterLog

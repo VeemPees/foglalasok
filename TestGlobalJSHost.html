@@ -1,0 +1,21 @@
+<script>
+
+function startProgress() 
+{
+	$("#re").css("visibility", "hidden");
+    $('#mySpinner').addClass('spinner');
+	document.getElementById("loader").style.visibility = "visible";
+}
+
+function endProgress()
+{
+	document.getElementById("loader").style.visibility = "hidden";
+	$("#re").css("visibility", "visible");
+}
+
+function onFailure(error)
+{
+	endProgress();
+	alert(error.message);
+}
+</script>
