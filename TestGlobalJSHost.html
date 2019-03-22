@@ -2,7 +2,7 @@
 
 function startProgress() 
 {
-	$("#re").css("visibility", "hidden");
+	$("#item-list").css("visibility", "hidden");
     $('#mySpinner').addClass('spinner');
 	document.getElementById("loader").style.visibility = "visible";
 }
@@ -10,7 +10,7 @@ function startProgress()
 function endProgress()
 {
 	document.getElementById("loader").style.visibility = "hidden";
-	$("#re").css("visibility", "visible");
+	$("#item-list").css("visibility", "visible");
 }
 
 function onFailure(error)

@@ -44,7 +44,7 @@
 					
 			// Make an AJAX call to Google Script
 			function insert_value() {
-				$("#re").css("visibility", "hidden");
+				$("#item-list").css("visibility", "hidden");
 				document.getElementById("loader").style.visibility = "visible";
 				$('#mySpinner').addClass('spinner');
 				var id1 = $("#id").val();
@@ -59,8 +59,8 @@
 			}
 			// print the returned data
 			function ctrlq(e) {
-				$("#re").html(e.result);
-				$("#re").css("visibility", "visible");
+				$("#item-list").html(e.result);
+				$("#item-list").css("visibility", "visible");
 				read_value();
 			}
 			
@@ -69,17 +69,7 @@
 <?!= include('TestItemListJSHost'); ?>
 </head>
 	<body>
-		<div align="center" data-role="page">
-			<div role="main" class="ui-content">
-				<div id="loader"></div>
-                <ul data-role="listview" id="re" data-divider-theme="a" data-inset="true">
-                	<li data-role="list-divider" data-theme="b" role="heading">Names</li>
-                </ul>
-				<input type="button" onclick="buildItemTable()" value="Read DS" />
-				<p>
-					<?= scriptUrl ?>
-				</p>
-			</div>
-		</div>
+    	<?!= include('TestItemListPageHost'); ?>
+        <?!= include('TestItemDetailsPageHost'); ?>
 	</body>
 </html>

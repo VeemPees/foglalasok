@@ -92,7 +92,7 @@ function doGet(e) {
         //In normale mode there is a different URL and script ID
         
         propScriptID = PropertiesService.getScriptProperties().getProperty("propLiveScriptID");
-        //scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
+        scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
       }
       template.developerMode = _developerMode_;
       template.scriptUrl = scriptUrl;
