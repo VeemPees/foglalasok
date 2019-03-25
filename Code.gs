@@ -44,7 +44,7 @@ function doGet(e) {
     
     /* what to do
     **
-    ** The action can be one of these: 'fetch'
+    ** The action can be one of these: 'fetch', 'listSlots'
     **
     */
     var op = e.parameter.action;
@@ -60,6 +60,20 @@ function doGet(e) {
         var ds = fetchItems();
         
         Logger.log("DataSet built");
+        
+        var output  = ContentService.createTextOutput();
+        
+        output.setContent(JSON.stringify(ds));
+        output.setMimeType(ContentService.MimeType.JSON);
+        
+        return output;
+      }
+      
+      if (op == 'listSlots') {
+        
+        var ds = listSlots(e);
+        
+        Logger.log("Slot list built");
         
         var output  = ContentService.createTextOutput();
         

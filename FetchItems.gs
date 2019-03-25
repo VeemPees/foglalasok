@@ -23,10 +23,12 @@ function buildData(sheetname)
     var row     = rows[r];
     var record  = {};
 
-    record.category = row[0];
-    record.name = row[1];
-    record.price = row[2];
-    record.duration = row[3];
+    record.id = row[0]
+    record.category = row[1];
+    record.name = row[2];
+    record.price = row[3];
+    record.duration = row[4];
+    record.details = row[5];
     
     data.push(record);
 
