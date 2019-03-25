@@ -90,7 +90,7 @@ function doGet(e) {
       Logger.log("There is no op/action, so render the entire HTML page");
       
     
-      var template = HtmlService.createTemplateFromFile("TestHtmlHost");
+      var template = HtmlService.createTemplateFromFile("Main");
       
       var propScriptID = "";
       var scriptUrl = "";

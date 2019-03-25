@@ -1,0 +1,58 @@
+<!-- details page -->
+<div data-role="page" id="details-page">
+    <div data-role="header" data-theme="b"><a href="#" data-rel="back" data-role="button">Vissza</a>
+        <h1>Részletek</h1>
+    </div>
+    <div data-role="content"></div>
+    <div data-role="content2"></div>
+</div>
+
+<script>
+//use pagebeforeshow            
+//DONT USE PAGEINIT!             
+//the reason is you want this to happen every single time            
+//pageinit will happen only once            
+$(document).on("pagebeforeshow", "#details-page", function () {            
+	//get from data - you put this here when the "a" wa clicked in the previous page            
+	var item = $(this).data("item");            
+	//string to put HTML in            
+    var info_view = "";            
+    //use for..in to iterate through object            
+    for (var key in item) {            
+		//Im using grid layout here.            
+        //use any kind of layout you want.            
+        //key is the key of the property in the object             
+        //if obj = {name: 'k'}            
+        //key = name, value = k            
+        info_view += '<div class="ui-grid-a"><div class="ui-block-a"><div class="ui-bar field" style="font-weight : bold; text-align: left;">' + key + '</div></div><div class="ui-block-b"><div class="ui-bar value" style="width : 75%">' + item[key] + '</div></div></div>';            
+    }            
+
+    //add this to html            
+	$(this).find("[data-role=content]").html(info_view);            
+
+	var reservationButton = '<input type="button" onclick="doReservation(';            
+
+	reservationButton += item.id;            
+    reservationButton += ')" value="Foglalás" />';            
+    
+    $(this).find("[data-role=content2]").html(reservationButton);            
+});        
+
+function doReservation(id)
+{
+	startProgress();
+    
+    //var url = script_url + "?action=fetch";
+    
+	//$.getJSON(url, function (json) {
+	//	  displayItems(json);
+	//});
+    
+	google.script.run
+		.withSuccessHandler(function(json) {
+			$.mobile.changePage("#calendar-page");
+		})
+		.withFailureHandler(onFailure)
+		.listSlots(id);
+}
+</script>
