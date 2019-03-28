@@ -3,5 +3,32 @@
     <div data-role="header" data-theme="b"><a href="#" data-rel="back" data-role="button">Vissza</a>
         <h1>Szabad időpontok</h1>
     </div>
-    <div data-role="calendar-content"></div>
+    <div data-role="calendar-content">
+        <table id="calendarDataTable">
+            <tr>
+                <th>H</th>
+                <th>K</th>
+                <th>Sz</th>
+                <th>Cs</th>
+                <th>P</th>
+                <th>Sz</th>
+                <th>V</th>
+            </tr>
+        </table>    
+    </div>
 </div>
+
+<script>
+function buildCalendarTable(json) {
+    for (var i = 0; i < json.days.length; i++) {
+        drawRow(json.days[i]);
+    }
+    $.mobile.changePage("#calendar-page");
+}
+
+function drawRow(rowData) {
+    var row = $("<tr />")
+    $("#calendarDataTable").append(row);
+    row.append($("<td>" + rowData + "</td>"));
+}
+</script>

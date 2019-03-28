@@ -50,9 +50,9 @@ function doReservation(id)
     
 	google.script.run
 		.withSuccessHandler(function(json) {
-			$.mobile.changePage("#calendar-page");
+			buildCalendarTable(json);
 		})
 		.withFailureHandler(onFailure)
-		.listSlots(id);
+		.listSlots(id, 0);
 }
 </script>
