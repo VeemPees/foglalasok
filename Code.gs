@@ -111,7 +111,9 @@ function doGet(e) {
       template.developerMode = _developerMode_;
       template.scriptUrl = scriptUrl;
       
-      var html = template.evaluate();
+      var html = template.evaluate()
+        .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+        .setTitle('Időpont foglalás');
       return html;
     }
   } catch(e) {

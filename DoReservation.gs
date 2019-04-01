@@ -11,11 +11,11 @@ function calcListStartDate(start)
     // dayNumber == 6 Saturday
     
     if (dayNumber == 0) { // start from next week if start day is Sunday
-      startDate.setDate(startDate.getDate() + 1);
+      startDate.setDate(startDate.addDays(1));
     } else if (dayNumber == 6) { // start from next week if start day is Saturday
-      startDate.setDate(startDate.getDate() + 2);
+      startDate.setDate(startDate.addDays(2));
     } else if (dayNumber != 1) { // if the start date is not Monday (Tue-Fri), start from the previous Monday
-      startDate.setDate(startDate.getDate() - dayNumber + 1);
+      startDate.setDate(startDate.addDays(1 - dayNumber));
     }
     
     return startDate;
@@ -25,7 +25,7 @@ function calcListStartDate(start)
   }
 }
 
-function listSlots(id, start)
+function listSlots(id, start, allowToday)
 {
   try {
     Logger.log("Listing slots for %s from %s", id, start);
@@ -56,8 +56,8 @@ function listSlots(id, start)
     
     theDay.setHours(0, 0, 0, 0);
     for (i = 0; i < 5; i++) { // go from Monday through Friday
-      days.push(listOneDay(id, i, theDay));
-      theDay.setDate(theDay.getDate() + 1);
+      days.push(listOneDay(id, i, theDay, allowToday));
+      theDay.setDate(theDay.addDays(1));
     }
     
     slots.days = days;
@@ -73,7 +73,7 @@ function listSlots(id, start)
   }
 }
 
-function listOneDay(service, dayNumberInWeek, thisDay)
+function listOneDay(service, dayNumberInWeek, thisDay, allowToday)
 {
   var oneDay = {};
   var today = new Date();
@@ -82,15 +82,107 @@ function listOneDay(service, dayNumberInWeek, thisDay)
 
   oneDay.service = service;
   oneDay.dayNumberInWeek = dayNumberInWeek;
+  oneDay.dayName = getDayName(thisDay);
+  
   if (thisDay < today) {
     oneDay.when = "Past";
+    oneDay.hours = createPastDay();
+      
   } else if (today < thisDay) {
     oneDay.when = "Future";
+    oneDay.hours = createFutureDay();
+    
   } else {
+    
     oneDay.when = "Today";
+    
+    if (allowToday) {
+      oneDay.hours = createToday();
+    } else {
+      oneDay.hours = createPastDay();
+    }
   }
   return oneDay;
 }
 
+function createToday()
+{
+  var hours = [];
+  var today = new Date();
+  var thisHour = today.getHours();
+  var hour = 0;
+  
+  thisHour = 11;
+  for (hour = 8; hour <= 16; hour++) {
+    if (hour <= thisHour) {
+      hours.push(createOneSlot(hour, false));
+    } else {
+      hours.push(createOneSlot(hour, isEmptySlot(hour)));
+    }
+  }
+  Logger.log(hours);
+  return hours;
+}
 
 
+function createFutureDay()
+{
+  var hours = [];
+  
+  for (hour = 8; hour <= 16; hour++) {
+    hours.push(createOneSlot(hour, isEmptySlot(hour)));
+  }
+  return hours;
+}
+
+function createPastDay()
+{
+  var hours = [];
+  
+  for (hour = 8; hour <= 16; hour++) {
+    hours.push(createOneSlot(hour, false));
+  }
+  return hours;
+}
+
+function createOneSlot(hour, free)
+{
+  var slot = {};
+  
+  slot.timeLabel = hour;
+  slot.free = free;
+  return slot;
+}
+
+function isEmptySlot(hour)
+{
+  var cal = CalendarApp.getCalendarById("vdl7a88r3mjp71c7gi90bl58t0@group.calendar.google.com");
+  var events = cal.getEventsForDay(new Date());
+  
+  for (var i = 0; i < events.length; i++) {
+    
+    var event = events[i];
+    var startTime = hour;
+    var endTime = calcEndTimeForService(hour);
+    
+    if (endTime < event.getStartTime().getHours()) {
+      continue;
+    } else if (event.getEndTime().getHours() < startTime) {
+      continue;
+    //} else if (startTime <= event.getStartTime().getHours()) {
+    //  continue;
+    //} else if (startTime <= event.getEndTime().getHours()) {
+    //  continue;
+    //} else if (startTime < event.getStartTime().getHours() && event.getEndTime().getHours() < endTime) {
+    //  continue;
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
+function calcEndTimeForService(hour)
+{
+  return hour + 1;
+}

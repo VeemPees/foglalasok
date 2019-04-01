@@ -5,65 +5,39 @@ function testDates()
   
   d2 = calcListStartDate(d);
   Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
+  d = d.addDays(1);
   
   d2 = calcListStartDate(d);
   Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
+  d = d.addDays(6);
   
   d2 = calcListStartDate(d);
   Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
   
-  d2 = calcListStartDate(d);
-  Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
-  
-  d2 = calcListStartDate(d);
-  Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
-  
-  d2 = calcListStartDate(d);
-  Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
-  
-  d2 = calcListStartDate(d);
-  Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
-  
-  d2 = calcListStartDate(d);
-  Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
-  
-  d2 = calcListStartDate(d);
-  Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
-  
-  d2 = calcListStartDate(d);
-  Logger.log("%s %s" , d, d2);
-  d.setDate(d.getDate() + 1);
 }
 
 function testSlots()
 {
   var r;
+
+  // 0 service, from today, today is not allowed  
+  r = listSlots(0, 0, false);
+  if (r.errorCode != 0) {
+    Logger.log(r.errorTxt);
+  }
   
-  r = listSlots(0, 0);
+  // 0 service, from today, today is allowed  
+  r = listSlots(0, 0, true);
+  if (r.errorCode != 0) {
+    Logger.log(r.errorTxt);
+  }
+
+}
+
+function testDateString()
+{
+  var s = "";
   
-  var d = new Date();
-  
-  d.setDate(d.getDate() + 4);
-  r = listSlots(0, d);
-  
-  d.setDate(d.getDate() + 1);
-  r = listSlots(0, d);
-  
-  d.setDate(d.getDate() + 1);
-  r = listSlots(0, d);
-  
-  d.setDate(d.getDate() + 1);
-  r = listSlots(0, d);
-  
-  d.setDate(d.getDate() + 1);
-  r = listSlots(0, d);
+  s = getDayName(new Date());
+  Logger.log(s);
 }
