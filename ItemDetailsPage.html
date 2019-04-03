@@ -35,24 +35,19 @@ $(document).on("pagebeforeshow", "#details-page", function () {
 	reservationButton += item.id;            
     reservationButton += ')" value="Foglalás" />';            
     
-    $(this).find("[data-role=content2]").html(reservationButton);            
+    $(this).find("[data-role=content2]").html(reservationButton);
+    $("#calendar-page").data("itemID", item.id);
 });        
 
 function doReservation(id)
 {
 	startProgress();
     
-    //var url = script_url + "?action=fetch";
-    
-	//$.getJSON(url, function (json) {
-	//	  displayItems(json);
-	//});
-    
 	google.script.run
 		.withSuccessHandler(function(json) {
 			buildCalendarTable(json);
 		})
 		.withFailureHandler(onFailure)
-		.listSlots(id, 0);
+		.listSlots(id, 0, true);
 }
 </script>

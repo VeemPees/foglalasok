@@ -1,21 +1,25 @@
 function calcListStartDate(start)
 {
   try {
-    var startDate;
+    var startDate = new Date();
+    var today;
     
-    startDate = new Date(start);
+    today = new Date(start);
     
-    var dayNumber = startDate.getDay();
+    var dayNumber = today.getDay();
     // dayNumber == 0 Sunday
     // dayNumber == 1 Monday
     // dayNumber == 6 Saturday
     
     if (dayNumber == 0) { // start from next week if start day is Sunday
-      startDate.setDate(startDate.addDays(1));
+      startDate = startDate.addDays(1);
+      Logger.log("Start from next week if start day is Sunday");
     } else if (dayNumber == 6) { // start from next week if start day is Saturday
-      startDate.setDate(startDate.addDays(2));
+      Logger.log("Start from next week if start day is Saturday");
+      startDate = startDate.addDays(2);
     } else if (dayNumber != 1) { // if the start date is not Monday (Tue-Fri), start from the previous Monday
-      startDate.setDate(startDate.addDays(1 - dayNumber));
+      Logger.log("Start from the previous Monday");
+      startDate = startDate.addDays(1 - dayNumber);
     }
     
     return startDate;
@@ -25,51 +29,74 @@ function calcListStartDate(start)
   }
 }
 
-function listSlots(id, start, allowToday)
+function getWeekLabel(weekOffsetFromToday)
+{
+  var startDate = new Date();
+  var endDate;
+  
+  if (weekOffsetFromToday > 0) {
+    startDate = startDate.addDays(7 * weekOffsetFromToday);
+  }
+  
+  if (startDate.getDay() != 1) {
+    startDate = startDate.addDays(1 - startDate.getDay());
+  }
+  endDate = startDate.addDays(5);
+  
+  return Utilities.formatDate(startDate, "GMT", "MMM dd") + " - " + Utilities.formatDate(endDate, "GMT", "MMM dd");
+}
+
+
+function listSlots(id, weekOffsetFromToday, allowToday)
 {
   try {
-    Logger.log("Listing slots for %s from %s", id, start);
     
-    var slots = {};
+    var startDate = calcListStartDate(new Date());
     
-    var days = [];
-    
-    var startDate;
-    
-    if (start == 0) {
+    if (weekOffsetFromToday == 0) {
       // Start from today
-      startDate = calcListStartDate(new Date());
+      Logger.log("Starting from today");
     } else {
       // Start from a given date, which is a Monday
-      startDate = new Date(start);
+      Logger.log("Starting from a given day");
+      startDate = startDate.addDays(7 * weekOffsetFromToday);
     }
     
-    // if it is not Monday, that's a problem, so return blanks
-    if (startDate.getDay() != 1) {
-      slots.errorCode = 1;
-      slots.errorTxt = "Invalid start day, not a Monday";
-      
-      return slots;
+    Logger.log("Checking if the start day is Monday");
+    
+    var weekData = {};
+    
+    if (startDate.getDay() != 1) { // if it is not Monday, that's a problem, so return blanks
+      weekData.errorCode = 1;
+      weekData.errorTxt = "Invalid start day, not a Monday";
+      Logger.log("Invalid start day, not a Monday");
+      return weekData;
     }
+    
+    Logger.log("Monday confirmed compiling free slots");
     
     var theDay = new Date(startDate);
+    var days = [];
     
     theDay.setHours(0, 0, 0, 0);
     for (i = 0; i < 5; i++) { // go from Monday through Friday
       days.push(listOneDay(id, i, theDay, allowToday));
-      theDay.setDate(theDay.addDays(1));
+      theDay = theDay.addDays(1);
     }
     
-    slots.days = days;
-    slots.errorCode = 0;
-    slots.errorTxt = "";
-    return slots;
+    weekData.days = days;
+    weekData.errorCode = 0;
+    weekData.errorTxt = "";
+    weekData.weekOffsetFromToday = weekOffsetFromToday;
+    weekData.weekLabel = getWeekLabel(weekOffsetFromToday);
+    return weekData;
     
   } catch (e) {
-    var slots = {};
-    slots.errorCode = -1;
-    slots.errorTxt = "Exception";
-    return slots;
+    logException(e);
+    var weekData = {};
+    weekData.errorCode = -1;
+    weekData.errorTxt = "Exception";
+    return weekData;
   }
 }
 
@@ -77,6 +104,7 @@ function listOneDay(service, dayNumberInWeek, thisDay, allowToday)
 {
   var oneDay = {};
   var today = new Date();
+  var cal = CalendarApp.getCalendarById("vdl7a88r3mjp71c7gi90bl58t0@group.calendar.google.com");
   
   today.setHours(0, 0, 0, 0);
 
@@ -90,14 +118,14 @@ function listOneDay(service, dayNumberInWeek, thisDay, allowToday)
       
   } else if (today < thisDay) {
     oneDay.when = "Future";
-    oneDay.hours = createFutureDay();
+    oneDay.hours = createFutureDay(cal);
     
   } else {
     
     oneDay.when = "Today";
     
     if (allowToday) {
-      oneDay.hours = createToday();
+      oneDay.hours = createToday(cal);
     } else {
       oneDay.hours = createPastDay();
     }
@@ -105,7 +133,7 @@ function listOneDay(service, dayNumberInWeek, thisDay, allowToday)
   return oneDay;
 }
 
-function createToday()
+function createToday(cal)
 {
   var hours = [];
   var today = new Date();
@@ -117,20 +145,20 @@ function createToday()
     if (hour <= thisHour) {
       hours.push(createOneSlot(hour, false));
     } else {
-      hours.push(createOneSlot(hour, isEmptySlot(hour)));
+      hours.push(createOneSlot(hour, isEmptySlot(hour, cal)));
     }
   }
-  Logger.log(hours);
+  
   return hours;
 }
 
 
-function createFutureDay()
+function createFutureDay(cal)
 {
   var hours = [];
   
   for (hour = 8; hour <= 16; hour++) {
-    hours.push(createOneSlot(hour, isEmptySlot(hour)));
+    hours.push(createOneSlot(hour, isEmptySlot(hour, cal)));
   }
   return hours;
 }
@@ -154,9 +182,8 @@ function createOneSlot(hour, free)
   return slot;
 }
 
-function isEmptySlot(hour)
+function isEmptySlot(hour, cal)
 {
-  var cal = CalendarApp.getCalendarById("vdl7a88r3mjp71c7gi90bl58t0@group.calendar.google.com");
   var events = cal.getEventsForDay(new Date());
   
   for (var i = 0; i < events.length; i++) {

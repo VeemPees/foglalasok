@@ -1,34 +1,101 @@
 <!-- calendar page -->
 <div data-role="page" id="calendar-page">
-    <div data-role="header" data-theme="b"><a href="#" data-rel="back" data-role="button">Vissza</a>
-        <h1>Szabad időpontok</h1>
+    <div data-role="header">
+        <button class="ui-btn-left  ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-arrow-l" onclick="prevWeek()">&nbsp;</button>
+        <h1 id="week-label"></h1>
+        <button class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-arrow-r" onclick="nextWeek()">&nbsp;</button>
+        <input id="hidden-calendar-week" value="">
     </div>
-    <div data-role="calendar-content">
-        <table id="calendarDataTable">
-            <tr>
-                <th>H</th>
-                <th>K</th>
-                <th>Sz</th>
-                <th>Cs</th>
-                <th>P</th>
-                <th>Sz</th>
-                <th>V</th>
-            </tr>
-        </table>    
-    </div>
+    
+    <div data-role="tabs" id="tabs">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="#CalDay1" data-ajax="false">Hétfő</a></li>
+				<li><a href="#CalDay2" data-ajax="false">Kedd</a></li>
+				<li><a href="#CalDay3" data-ajax="false">Szerda</a></li>
+				<li><a href="#CalDay4" data-ajax="false">Csütörtök</a></li>
+				<li><a href="#CalDay5" data-ajax="false">Péntek</a></li>
+			</ul>
+		</div>
+		<div id="CalDay1">
+			<ul data-role="listview" data-inset="true" id="DayList1">
+			</ul>
+		</div>
+		<div id="CalDay2">
+			<ul data-role="listview" data-inset="true" id="DayList2">
+			</ul>
+		</div>
+		<div id="CalDay3">
+			<ul data-role="listview" data-inset="true" id="DayList3">
+			</ul>
+		</div>
+		<div id="CalDay4">
+			<ul data-role="listview" data-inset="true" id="DayList4">
+			</ul>
+		</div>
+		<div id="CalDay5">
+			<ul data-role="listview" data-inset="true" id="DayList5">
+			</ul>
+		</div>
+	</div>
 </div>
 
 <script>
-function buildCalendarTable(json) {
-    for (var i = 0; i < json.days.length; i++) {
-        drawRow(json.days[i]);
+function prevWeek()
+{
+    var week = document.getElementById('hidden-calendar-week').value;
+    if (week > 0) {
+        buildNewWeek(week - 1);
     }
+}
+function nextWeek()
+{
+    var week = document.getElementById('hidden-calendar-week').value;
+    if (week < 9) {
+        buildNewWeek(Number(week) + 1);
+    }
+}
+
+function buildNewWeek(newWeekOffsetFromToday)
+{
+	var itemID = $("#calendar-page").data("itemID");
+    
+    google.script.run
+	.withSuccessHandler(function(json) {
+		buildCalendarTable(json);
+	})
+	.withFailureHandler(onFailure)
+	.listSlots(itemID, newWeekOffsetFromToday, true);
+}
+
+function displayNewWeek(weekData)
+{
+    $("#week-label").text(weekData.weekLabel);
+    $("#hidden-calendar-week").val(weekData.weekOffsetFromToday);
+}
+
+function buildCalendarTable(weekData)
+{
+    for (var i = 0; i < weekData.days.length; i++) {
+        drawDay(weekData.days[i], i + 1);
+    }
+    displayNewWeek(weekData);
+    
     $.mobile.changePage("#calendar-page");
 }
 
-function drawRow(rowData) {
-    var row = $("<tr />")
-    $("#calendarDataTable").append(row);
-    row.append($("<td>" + rowData + "</td>"));
+function drawDay(day, counter) {
+    var li = "";
+    for (var i = 0; i < day.hours.length; i++) {
+        var hour = day.hours[i];
+        li += '<li>' + hour.timeLabel;
+        if (hour.free) {
+            li += ' szabad</li>';
+        } else {
+            li += ' foglalt</li>';
+        }
+    }
+    $("#DayList" + counter).empty();
+    $("#DayList" + counter).append(li).listview().listview("refresh");
 }
 </script>

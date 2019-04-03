@@ -16,12 +16,24 @@ function testDates()
   
 }
 
+function testDayAdd()
+{
+  var d = new Date();
+  var d2;
+  
+  d2 = d.addDays(1);
+  d2 = d.addDays(-2);
+  d2 = d.addDays(-1);
+  
+  d2 = calcListStartDate(d);
+}
+
 function testSlots()
 {
   var r;
 
   // 0 service, from today, today is not allowed  
-  r = listSlots(0, 0, false);
+  r = listSlots(1, 0, false);
   if (r.errorCode != 0) {
     Logger.log(r.errorTxt);
   }
