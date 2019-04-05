@@ -4,6 +4,7 @@
 // Dev script URL: https://script.google.com/macros/s/<propDevScriptID>/dev
 // Dev script ID: <propDevScriptID>
 // Executable API: MaXKv1Y9EKq_uH_oGSum4YPVtukfi2slr
+// Logo img ID: <propLogoID>
 
 /*
 BetterLog

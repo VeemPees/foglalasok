@@ -4,7 +4,7 @@
         <button class="ui-btn-left  ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-arrow-l" onclick="prevWeek()">&nbsp;</button>
         <h1 id="week-label"></h1>
         <button class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-arrow-r" onclick="nextWeek()">&nbsp;</button>
-        <input id="hidden-calendar-week" value="">
+        <input id="hidden-calendar-week" type="hidden" value="">
     </div>
     
     <div data-role="tabs" id="tabs">
@@ -58,14 +58,14 @@ function nextWeek()
 
 function buildNewWeek(newWeekOffsetFromToday)
 {
-	var itemID = $("#calendar-page").data("itemID");
-    
+	var service = $("#calendar-page").data("service");
+    startProgress();
     google.script.run
 	.withSuccessHandler(function(json) {
 		buildCalendarTable(json);
 	})
 	.withFailureHandler(onFailure)
-	.listSlots(itemID, newWeekOffsetFromToday, true);
+	.listSlots(service.id, newWeekOffsetFromToday, true);
 }
 
 function displayNewWeek(weekData)
@@ -80,22 +80,43 @@ function buildCalendarTable(weekData)
         drawDay(weekData.days[i], i + 1);
     }
     displayNewWeek(weekData);
-    
+    endProgress();
     $.mobile.changePage("#calendar-page");
 }
 
 function drawDay(day, counter) {
     var li = "";
     for (var i = 0; i < day.hours.length; i++) {
+        
         var hour = day.hours[i];
-        li += '<li>' + hour.timeLabel;
+        
         if (hour.free) {
-            li += ' szabad</li>';
+            li += '<li>';
         } else {
-            li += ' foglalt</li>';
+            li += '<li class="ui-state-disabled">';
         }
+        
+        li += '<a href="#" id="' + i + '" class="reserve-go">' + hour.timeLabel + '</a></li>';
     }
     $("#DayList" + counter).empty();
-    $("#DayList" + counter).append(li).listview().listview("refresh");
+    
+    //append list to ul
+    $("#DayList" + counter).append(li).promise().done(function () {
+        //wait for append to finish - thats why you use a promise()
+        //done() will run after append is done
+        //add the click event for the redirection to happen to #details-page
+        $(this).on("click", ".reserve-go", function (e) {
+            e.preventDefault();
+            //store the information in the next page's data
+            $("#reservation-page").data("day", day);
+            $("#reservation-page").data("hourIndex", this.id);
+            $.mobile.changePage("#reservation-page");
+        });
+
+        //refresh list to enhance its styling.
+        $("#DayList" + counter).listview().listview("refresh");
+    });
+    
+    
 }
 </script>

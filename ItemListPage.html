@@ -1,34 +1,37 @@
 <!-- list page -->
 <div align="center" data-role="page" id="item-list-page">
-    <div data-role="header" data-theme="b">
-         <h1>Foglalás</h1>
+    <div data-role="header">
+         <h1><image id="logo" /></h1>
     </div>
 	<div role="main" class="ui-content">
 		<div id="loader">
         </div>
 		<ul data-role="listview" id="item-list" data-divider-theme="a" data-inset="true">
 		</ul>
-		<input type="button" onclick="buildItemTable()" value="Go" />
+		
 	</div>
 </div>
 
 <script>
+//<input type="button" onclick="buildItemTable()" value="Go" />
 function buildItemTable()
 {
 	startProgress();
     
-    //var url = script_url + "?action=fetch";
-    
-	//$.getJSON(url, function (json) {
-	//	  displayItems(json);
-	//});
-    
+    google.script.run
+		.withSuccessHandler( function(bytes){ showImage(bytes) })
+		.loadImageBytes();
+        
 	google.script.run
 		.withSuccessHandler(function(json) {
 			displayItems(json);
 		})
 		.withFailureHandler(onFailure)
 		.fetchItems();
+}
+
+function showImage(bytes){
+    document.getElementById("logo").src = "data:image/png;base64," + bytes; 
 }
 
 function displayItems(json)
@@ -53,7 +56,15 @@ function displayItems(json)
         $(this).on("click", ".info-go", function (e) {
             e.preventDefault();
             //store the information in the next page's data
-            $("#details-page").data("item", json.Items[this.id]);
+            $("#details-page").data("service", json.Items[this.id]);
+            
+//            service.id
+//            service.category
+//            service.name
+//            service.price
+//            service.duration
+//            service.details
+            
             //change the page # to second page. 
             //Now the URL in the address bar will read index.html#details-page
             //where #details-page is the "id" of the second page
@@ -67,4 +78,12 @@ function displayItems(json)
     
     endProgress();
 }
+
+$(document).on('pageinit', '#item-list-page', function(){       
+    buildItemTable();
+});
+
+$(document).on('pagebeforeshow', '#item-list-page', function(){       
+    
+});
 </script>

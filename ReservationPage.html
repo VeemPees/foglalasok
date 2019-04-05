@@ -1,0 +1,33 @@
+<!-- reservation page -->
+<div data-role="page" id="reservation-page">
+    <div data-role="header">
+        <h1 id="reservation-header"></h1>
+    </div>
+    <div data-role="content" id="reservation-panel">
+        <div data-role="fieldcontain">
+            <label for="name">Név</label>
+            <input class="inputField" id="name" value="" type="text" value="" />
+        </div>
+        <div data-role="fieldcontain">
+            <label for="name">Telefon</label>
+            <input class="inputField" id="phone" value="" type="text" value="" />
+        </div>
+        <div data-role="fieldcontain">
+            <label for="name">Email</label>
+            <input class="inputField" id="email" value="" type="text" value="" />
+        </div>
+        <input type="button" onclick="" value="Mehet" />
+    </div>
+</div>
+
+<script>
+$(document).on("pagebeforeshow", "#reservation-page", function () {            
+	var day = $("#reservation-page").data("day");
+    var hourIndex = $("#reservation-page").data("hourIndex");
+    $("#reservation-header").html(day.service + " " + day.hours[hourIndex].timeLabel);
+    
+    var info_view = "";
+}); 
+
+
+</script>

@@ -2,15 +2,18 @@
 
 function startProgress() 
 {
-	$("#item-list").css("visibility", "hidden");
-    $('#mySpinner').addClass('spinner');
-	document.getElementById("loader").style.visibility = "visible";
+    $.mobile.loading( "show", {
+            text: "Töltődik",
+            textVisible: false,
+            theme: $.mobile.loader.prototype.options.theme,
+            textonly: false,
+            html: ""
+    });
 }
 
 function endProgress()
 {
-	document.getElementById("loader").style.visibility = "hidden";
-	$("#item-list").css("visibility", "visible");
+	$.mobile.loading("hide");
 }
 
 function onFailure(error)

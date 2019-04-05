@@ -177,7 +177,13 @@ function createOneSlot(hour, free)
 {
   var slot = {};
   
-  slot.timeLabel = hour;
+  if (hour < 10) {
+    slot.timeLabel = "0" + hour;
+  } else {
+    slot.timeLabel = hour;
+  }
+  slot.timeLabel += ":00";
+  slot.timeRaw = hour;
   slot.free = free;
   return slot;
 }

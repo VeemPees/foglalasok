@@ -38,3 +38,10 @@ function t()
     Logger.log('%s: %s - %s', event.getTitle(), event.getStartTime(), event.getEndTime());
   }
 }
+
+function loadImageBytes()
+{
+    var id = PropertiesService.getScriptProperties().getProperty("propLogoID");
+    var bytes = DriveApp.getFileById(id).getBlob().getBytes();
+    return Utilities.base64Encode(bytes);
+}
