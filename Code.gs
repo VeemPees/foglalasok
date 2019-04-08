@@ -57,7 +57,7 @@ function doGet(e) {
       
       if (op == 'fetch') {
         
-        var ds = fetchItems();
+        var ds = fetchServices();
         
         Logger.log("DataSet built");
         

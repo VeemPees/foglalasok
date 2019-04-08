@@ -1,6 +1,6 @@
 <!-- details page -->
 
-<div data-role="page" id="details-page">
+<div data-role="page" id="service-details-page">
     <div data-role="header">
         <h1 id="details-header"></h1>
     </div>
@@ -13,7 +13,7 @@
 //DONT USE PAGEINIT!             
 //the reason is you want this to happen every single time            
 //pageinit will happen only once            
-$(document).on("pagebeforeshow", "#details-page", function () {            
+$(document).on("pagebeforeshow", "#service-details-page", function () {            
 	//get from data - you put this here when the "a" wa clicked in the previous page     
     
 	var service = $(this).data("service");            

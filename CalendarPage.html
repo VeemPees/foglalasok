@@ -104,7 +104,7 @@ function drawDay(day, counter) {
     $("#DayList" + counter).append(li).promise().done(function () {
         //wait for append to finish - thats why you use a promise()
         //done() will run after append is done
-        //add the click event for the redirection to happen to #details-page
+        //add the click event for the redirection to happen to #service-details-page
         $(this).on("click", ".reserve-go", function (e) {
             e.preventDefault();
             //store the information in the next page's data
