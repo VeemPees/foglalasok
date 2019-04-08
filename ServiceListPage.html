@@ -1,20 +1,19 @@
 <!-- list page -->
-<div align="center" data-role="page" id="item-list-page">
+<div align="center" data-role="page" id="service-list-page">
     <div data-role="header">
          <h1><image id="logo" /></h1>
     </div>
 	<div role="main" class="ui-content">
 		<div id="loader">
         </div>
-		<ul data-role="listview" id="item-list" data-divider-theme="a" data-inset="true">
+		<ul data-role="listview" id="service-list" data-divider-theme="a" data-inset="true">
 		</ul>
 		
 	</div>
 </div>
 
 <script>
-//<input type="button" onclick="buildItemTable()" value="Go" />
-function buildItemTable()
+function buildServiceTable()
 {
 	startProgress();
     
@@ -36,7 +35,7 @@ function showImage(bytes){
 
 function displayItems(json)
 {
-	$("#item-list").css("visibility", "visible");
+	$("#service-list").css("visibility", "visible");
     
     //set up string for adding <li/>
     var li = "";
@@ -49,7 +48,7 @@ function displayItems(json)
         li += '<li><a href="#" id="' + i + '" class="info-go">' + item.name + '</a></li>';
     });
     //append list to ul
-    $("#item-list").append(li).promise().done(function () {
+    $("#service-list").append(li).promise().done(function () {
         //wait for append to finish - thats why you use a promise()
         //done() will run after append is done
         //add the click event for the redirection to happen to #details-page
@@ -79,11 +78,11 @@ function displayItems(json)
     endProgress();
 }
 
-$(document).on('pageinit', '#item-list-page', function(){       
-    buildItemTable();
+$(document).on('pageinit', '#service-list-page', function(){       
+    buildServiceTable();
 });
 
-$(document).on('pagebeforeshow', '#item-list-page', function(){       
+$(document).on('pagebeforeshow', '#service-list-page', function(){       
     
 });
 </script>
