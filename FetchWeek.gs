@@ -75,12 +75,16 @@ function fetchWeek(serviceID, weekOffsetFromToday, allowToday)
     
     Logger.log("Monday confirmed compiling free slots");
     
+    var cal = {};
+    
+    //cal = CalendarApp.getCalendarById("vdl7a88r3mjp71c7gi90bl58t0@group.calendar.google.com");
+    
     var theDay = new Date(startDate);
     var days = [];
     
     theDay.setHours(0, 0, 0, 0);
     for (i = 0; i < 5; i++) { // go from Monday through Friday
-      days.push(listOneDay(serviceID, i, theDay, allowToday));
+      days.push(listOneDay(serviceID, i, theDay, allowToday, cal));
       theDay = theDay.addDays(1);
     }
     
@@ -100,17 +104,19 @@ function fetchWeek(serviceID, weekOffsetFromToday, allowToday)
   }
 }
 
-function listOneDay(serviceID, dayNumberInWeek, thisDay, allowToday)
+function listOneDay(serviceID, dayNumberInWeek, thisDay, allowToday, cal)
 {
   var oneDay = {};
   var today = new Date();
-  var cal = CalendarApp.getCalendarById("vdl7a88r3mjp71c7gi90bl58t0@group.calendar.google.com");
   
   today.setHours(0, 0, 0, 0);
 
   oneDay.serviceID = serviceID;
   oneDay.dayNumberInWeek = dayNumberInWeek;
   oneDay.dayName = getDayName(thisDay);
+  oneDay.dayYear = thisDay.getFullYear();
+  oneDay.dayMonthIndex = thisDay.getMonth();
+  oneDay.dayDay = thisDay.getDate();
   
   if (thisDay < today) {
     oneDay.when = "Past";
@@ -190,28 +196,28 @@ function createOneSlot(hour, free)
 
 function isEmptySlot(serviceID, hour, cal)
 {
-  var events = cal.getEventsForDay(new Date());
-  
-  for (var i = 0; i < events.length; i++) {
-    
-    var event = events[i];
-    var startTime = hour;
-    var endTime = calcEndTimeForService(serviceID, hour);
-    
-    if (endTime < event.getStartTime().getHours()) {
-      continue;
-    } else if (event.getEndTime().getHours() < startTime) {
-      continue;
-    //} else if (startTime <= event.getStartTime().getHours()) {
-    //  continue;
-    //} else if (startTime <= event.getEndTime().getHours()) {
-    //  continue;
-    //} else if (startTime < event.getStartTime().getHours() && event.getEndTime().getHours() < endTime) {
-    //  continue;
-    } else {
-      return false;
-    }
-  }
+//  var events = cal.getEventsForDay(new Date());
+//  
+//  for (var i = 0; i < events.length; i++) {
+//    
+//    var event = events[i];
+//    var startTime = hour;
+//    var endTime = calcEndTimeForService(serviceID, hour);
+//    
+//    if (endTime < event.getStartTime().getHours()) {
+//      continue;
+//    } else if (event.getEndTime().getHours() < startTime) {
+//      continue;
+//    //} else if (startTime <= event.getStartTime().getHours()) {
+//    //  continue;
+//    //} else if (startTime <= event.getEndTime().getHours()) {
+//    //  continue;
+//    //} else if (startTime < event.getStartTime().getHours() && event.getEndTime().getHours() < endTime) {
+//    //  continue;
+//    } else {
+//      return false;
+//    }
+//  }
   return true;
 }
 
