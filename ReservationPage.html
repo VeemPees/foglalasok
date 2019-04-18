@@ -4,19 +4,21 @@
         <h1 id="reservation-header"></h1>
     </div>
     <div data-role="content" id="reservation-panel">
-        <div data-role="fieldcontain">
-            <label for="name">Név</label>
-            <input class="inputField" id="name" value="" type="text" value="" />
-        </div>
-        <div data-role="fieldcontain">
-            <label for="name">Telefon</label>
-            <input class="inputField" id="phone" value="" type="text" value="" />
-        </div>
-        <div data-role="fieldcontain">
-            <label for="name">Email</label>
-            <input class="inputField" id="email" value="" type="text" value="" />
-        </div>
-        <input type="button" onclick="" value="Mehet" />
+        <form id="reservation" name="reservation">
+            <div data-role="fieldcontain">
+                <label for="name">Név</label>
+                <input class="inputField" id="name" name="name" value="" type="text" value="" />
+            </div>
+            <div data-role="fieldcontain">
+                <label for="phone">Telefon</label>
+                <input class="inputField" id="phone" name="phone" value="" type="text" value="" />
+            </div>
+            <div data-role="fieldcontain">
+                <label for="email">Email</label>
+                <input class="inputField" id="email" name="email" value="" type="text" value="" />
+            </div>
+            <input type="submit" data-icon="check" value="Mehet" id="submit"/>
+        </form>
     </div>
 </div>
 
@@ -24,10 +26,41 @@
 $(document).on("pagebeforeshow", "#reservation-page", function () {            
 	var day = $("#reservation-page").data("day");
     var hourIndex = $("#reservation-page").data("hourIndex");
-    $("#reservation-header").html(day.service + " " + day.hours[hourIndex].timeLabel);
+    var service = $("#reservation-page").data("service");
+    $("#reservation-header").html(service.name + " " + day.hours[hourIndex].timeLabel);
     
     var info_view = "";
-}); 
+       
+});
+$(document).on('pageinit', '#reservation-page', function(){       
+	// Initialize form validation on the reservation form.
+	// It has the name attribute "reservation"
+	$("form[name='reservation']").validate({
+		// Specify validation rules
+		rules: {
+			// The key name on the left side is the name attribute of an input field.
+			// Validation rules are defined on the right side
+			name: "required",
+            phone: "required",
+			email: {
+				required: true,
+				// Specify that email should be validated
+				// by the built-in "email" rule
+				email: true
+			}
+		},
+		// Specify validation error messages
+		messages: {
+			name: "Kérlek add meg a neved",
+			phone: "Kérlek add meg a telefonszámod",
+			email: "Kérlek add meg az email címed"
+		},
+		// Make sure the form is submitted to the destination defined
+		// in the "action" attribute of the form when valid
+		submitHandler: function(form) {
+		  alert('Handle submit here!');
+		}
+	});
 
-
+});
 </script>

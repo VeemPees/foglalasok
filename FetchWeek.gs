@@ -1,4 +1,4 @@
-function calcListStartDate(start)
+function calcWeekStartDate(start)
 {
   try {
     var startDate = new Date();
@@ -47,11 +47,11 @@ function getWeekLabel(weekOffsetFromToday)
 }
 
 
-function listSlots(id, weekOffsetFromToday, allowToday)
+function fetchWeek(serviceID, weekOffsetFromToday, allowToday)
 {
   try {
     
-    var startDate = calcListStartDate(new Date());
+    var startDate = calcWeekStartDate(new Date());
     
     if (weekOffsetFromToday == 0) {
       // Start from today
@@ -80,7 +80,7 @@ function listSlots(id, weekOffsetFromToday, allowToday)
     
     theDay.setHours(0, 0, 0, 0);
     for (i = 0; i < 5; i++) { // go from Monday through Friday
-      days.push(listOneDay(id, i, theDay, allowToday));
+      days.push(listOneDay(serviceID, i, theDay, allowToday));
       theDay = theDay.addDays(1);
     }
     
@@ -100,7 +100,7 @@ function listSlots(id, weekOffsetFromToday, allowToday)
   }
 }
 
-function listOneDay(service, dayNumberInWeek, thisDay, allowToday)
+function listOneDay(serviceID, dayNumberInWeek, thisDay, allowToday)
 {
   var oneDay = {};
   var today = new Date();
@@ -108,7 +108,7 @@ function listOneDay(service, dayNumberInWeek, thisDay, allowToday)
   
   today.setHours(0, 0, 0, 0);
 
-  oneDay.service = service;
+  oneDay.serviceID = serviceID;
   oneDay.dayNumberInWeek = dayNumberInWeek;
   oneDay.dayName = getDayName(thisDay);
   
@@ -118,14 +118,14 @@ function listOneDay(service, dayNumberInWeek, thisDay, allowToday)
       
   } else if (today < thisDay) {
     oneDay.when = "Future";
-    oneDay.hours = createFutureDay(cal);
+    oneDay.hours = createFutureDay(serviceID, cal);
     
   } else {
     
     oneDay.when = "Today";
     
     if (allowToday) {
-      oneDay.hours = createToday(cal);
+      oneDay.hours = createToday(serviceID, cal);
     } else {
       oneDay.hours = createPastDay();
     }
@@ -133,7 +133,7 @@ function listOneDay(service, dayNumberInWeek, thisDay, allowToday)
   return oneDay;
 }
 
-function createToday(cal)
+function createToday(serviceID, cal)
 {
   var hours = [];
   var today = new Date();
@@ -145,7 +145,7 @@ function createToday(cal)
     if (hour <= thisHour) {
       hours.push(createOneSlot(hour, false));
     } else {
-      hours.push(createOneSlot(hour, isEmptySlot(hour, cal)));
+      hours.push(createOneSlot(hour, isEmptySlot(serviceID, hour, cal)));
     }
   }
   
@@ -153,12 +153,12 @@ function createToday(cal)
 }
 
 
-function createFutureDay(cal)
+function createFutureDay(serviceID, cal)
 {
   var hours = [];
   
   for (hour = 8; hour <= 16; hour++) {
-    hours.push(createOneSlot(hour, isEmptySlot(hour, cal)));
+    hours.push(createOneSlot(hour, isEmptySlot(serviceID, hour, cal)));
   }
   return hours;
 }
@@ -188,7 +188,7 @@ function createOneSlot(hour, free)
   return slot;
 }
 
-function isEmptySlot(hour, cal)
+function isEmptySlot(serviceID, hour, cal)
 {
   var events = cal.getEventsForDay(new Date());
   
@@ -196,7 +196,7 @@ function isEmptySlot(hour, cal)
     
     var event = events[i];
     var startTime = hour;
-    var endTime = calcEndTimeForService(hour);
+    var endTime = calcEndTimeForService(serviceID, hour);
     
     if (endTime < event.getStartTime().getHours()) {
       continue;
@@ -215,7 +215,7 @@ function isEmptySlot(hour, cal)
   return true;
 }
 
-function calcEndTimeForService(hour)
+function calcEndTimeForService(serviceID, hour)
 {
   return hour + 1;
 }

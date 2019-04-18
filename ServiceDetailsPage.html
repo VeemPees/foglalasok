@@ -2,10 +2,10 @@
 
 <div data-role="page" id="service-details-page">
     <div data-role="header">
-        <h1 id="details-header"></h1>
+        <h1 id="service-details-header"></h1>
     </div>
-    <div data-role="content" id="details-panel"></div>
-    <input type="button" onclick="doReservation();" value="Időpontok" />
+    <div data-role="content" id="service-details-panel"></div>
+    <input type="button" onclick="fetchWeekData();" value="Időpontok" />
 </div>
 
 <script>
@@ -38,7 +38,7 @@ $(document).on("pagebeforeshow", "#service-details-page", function () {
     //add this to html            
 	$(this).find("[data-role=content]").html(info_view);
 
-    $("#details-header").html(service.name);
+    $("#service-details-header").html(service.name);
     
     $("#calendar-page").data("service", service);
 }); 
@@ -53,7 +53,7 @@ function addOneRow(key, value)
     return html;
 }
 
-function doReservation()
+function fetchWeekData()
 {
 	startProgress();
     
@@ -64,6 +64,6 @@ function doReservation()
 			buildCalendarTable(json);
 		})
 		.withFailureHandler(onFailure)
-		.listSlots(service.id, 0, true);
+		.fetchWeek(service.id, 0, true);
 }
 </script>

@@ -44,7 +44,7 @@ function doGet(e) {
     
     /* what to do
     **
-    ** The action can be one of these: 'fetch', 'listSlots'
+    ** The action can be one of these: 'fetch', 'fetchWeek'
     **
     */
     var op = e.parameter.action;
@@ -69,9 +69,9 @@ function doGet(e) {
         return output;
       }
       
-      if (op == 'listSlots') {
+      if (op == 'fetchWeek') {
         
-        var ds = listSlots(e);
+        var ds = fetchWeek(e);
         
         Logger.log("Slot list built");
         

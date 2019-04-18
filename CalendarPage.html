@@ -65,7 +65,7 @@ function buildNewWeek(newWeekOffsetFromToday)
 		buildCalendarTable(json);
 	})
 	.withFailureHandler(onFailure)
-	.listSlots(service.id, newWeekOffsetFromToday, true);
+	.fetchWeek(service.id, newWeekOffsetFromToday, true);
 }
 
 function displayNewWeek(weekData)
@@ -110,13 +110,15 @@ function drawDay(day, counter) {
             //store the information in the next page's data
             $("#reservation-page").data("day", day);
             $("#reservation-page").data("hourIndex", this.id);
+            
+            var service = $("#calendar-page").data("service");
+            
+            $("#reservation-page").data("service", service);
+            
             $.mobile.changePage("#reservation-page");
         });
 
-        //refresh list to enhance its styling.
         $("#DayList" + counter).listview().listview("refresh");
     });
-    
-    
 }
 </script>
