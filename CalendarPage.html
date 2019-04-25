@@ -4,17 +4,17 @@
         <button class="ui-btn-left  ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-arrow-l" onclick="prevWeek()">&nbsp;</button>
         <h1 id="week-label"></h1>
         <button class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-arrow-r" onclick="nextWeek()">&nbsp;</button>
-        <input id="hidden-calendar-week" type="hidden" value="">
+        <input id="hidden-calendar-weekOffsetFromToday" value="">
     </div>
     
     <div data-role="tabs" id="tabs">
 		<div data-role="navbar">
 			<ul>
-				<li><a href="#CalDay1" data-ajax="false">Hétfő</a></li>
-				<li><a href="#CalDay2" data-ajax="false">Kedd</a></li>
-				<li><a href="#CalDay3" data-ajax="false">Szerda</a></li>
-				<li><a href="#CalDay4" data-ajax="false">Csütörtök</a></li>
-				<li><a href="#CalDay5" data-ajax="false">Péntek</a></li>
+				<li><a href="#CalDay1" data-ajax="false" id="DayHeader1" class="ui-btn-active">Hétfő</a></li>
+				<li><a href="#CalDay2" data-ajax="false" id="DayHeader2">Kedd</a></li>
+				<li><a href="#CalDay3" data-ajax="false" id="DayHeader3">Szerda</a></li>
+				<li><a href="#CalDay4" data-ajax="false" id="DayHeader4">Csütörtök</a></li>
+				<li><a href="#CalDay5" data-ajax="false" id="DayHeader5">Péntek</a></li>
 			</ul>
 		</div>
 		<div id="CalDay1">
@@ -43,14 +43,14 @@
 <script>
 function prevWeek()
 {
-    var week = document.getElementById('hidden-calendar-week').value;
+    var week = document.getElementById('hidden-calendar-weekOffsetFromToday').value;
     if (week > 0) {
         buildNewWeek(week - 1);
     }
 }
 function nextWeek()
 {
-    var week = document.getElementById('hidden-calendar-week').value;
+    var week = document.getElementById('hidden-calendar-weekOffsetFromToday').value;
     if (week < 9) {
         buildNewWeek(Number(week) + 1);
     }
@@ -62,7 +62,7 @@ function buildNewWeek(newWeekOffsetFromToday)
     startProgress();
     google.script.run
 	.withSuccessHandler(function(json) {
-		buildCalendarTable(json);
+		buildCalendarTable(json, true);
 	})
 	.withFailureHandler(onFailure)
 	.fetchWeek(service.id, newWeekOffsetFromToday, true);
@@ -71,20 +71,25 @@ function buildNewWeek(newWeekOffsetFromToday)
 function displayNewWeek(weekData)
 {
     $("#week-label").text(weekData.weekLabel);
-    $("#hidden-calendar-week").val(weekData.weekOffsetFromToday);
+    $("#hidden-calendar-weekOffsetFromToday").val(weekData.weekOffsetFromToday);
 }
 
-function buildCalendarTable(weekData)
+function buildCalendarTable(weekData, newWeek)
 {
+    var dayHeaderPostFix = weekData.dayOffsetToHighlight + 1;
+    
     for (var i = 0; i < weekData.days.length; i++) {
-        drawDay(weekData.days[i], i + 1);
+        drawDay(weekData.days[i], i + 1, newWeek);
     }
     displayNewWeek(weekData);
     endProgress();
-    $.mobile.changePage("#calendar-page");
+    
+    if (!newWeek)    {
+        $.mobile.changePage("#calendar-page");
+    }
 }
 
-function drawDay(day, counter) {
+function drawDay(day, counter, newWeek) {
     var li = "";
     for (var i = 0; i < day.hours.length; i++) {
         
@@ -104,7 +109,8 @@ function drawDay(day, counter) {
     $("#DayList" + counter).append(li).promise().done(function () {
         //wait for append to finish - thats why you use a promise()
         //done() will run after append is done
-        //add the click event for the redirection to happen to #service-details-page
+        //add the click event for the redirection to happen
+        if (!newWeek) {
         $(this).on("click", ".reserve-go", function (e) {
             e.preventDefault();
             //store the information in the next page's data
@@ -117,6 +123,7 @@ function drawDay(day, counter) {
             
             $.mobile.changePage("#reservation-page");
         });
+        }
 
         $("#DayList" + counter).listview().listview("refresh");
     });

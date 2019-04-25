@@ -41,7 +41,7 @@ function getWeekLabel(weekOffsetFromToday)
   if (startDate.getDay() != 1) {
     startDate = startDate.addDays(1 - startDate.getDay());
   }
-  endDate = startDate.addDays(5);
+  endDate = startDate.addDays(4);
   
   return Utilities.formatDate(startDate, "GMT", "MMM dd") + " - " + Utilities.formatDate(endDate, "GMT", "MMM dd");
 }
@@ -93,6 +93,19 @@ function fetchWeek(serviceID, weekOffsetFromToday, allowToday)
     weekData.errorTxt = "";
     weekData.weekOffsetFromToday = weekOffsetFromToday;
     weekData.weekLabel = getWeekLabel(weekOffsetFromToday);
+    if (weekData.weekOffsetFromToday > 0) {
+      // next or later week, so Monday is the one to highlight
+      weekData.dayOffsetToHighlight = 0;
+    } else {
+      // this week, so today is in the Mon-Fri range for sure (Sat/Sun would mean positive week offset
+      var today = new Date();
+
+      // getDay == 0 Sunday
+      // getDay == 1 Monday
+      // getDay == 6 Saturday
+      
+      weekData.dayOffsetToHighlight = today.getDay() - 1;
+    }
     return weekData;
     
   } catch (e) {

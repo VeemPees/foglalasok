@@ -32,8 +32,6 @@ $(document).on("pagebeforeshow", "#reservation-page", function () {
     
     $("#reservation-header").html(service.name + " " + theDay.toLocaleDateString('hu-HU', options) + " " + day.hours[hourIndex].timeLabel);
     
-    var info_view = "";
-       
 });
 $(document).on('pageinit', '#reservation-page', function(){       
 	// Initialize form validation on the reservation form.

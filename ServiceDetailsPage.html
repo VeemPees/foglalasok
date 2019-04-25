@@ -61,7 +61,7 @@ function fetchWeekData()
     
 	google.script.run
 		.withSuccessHandler(function(json) {
-			buildCalendarTable(json);
+			buildCalendarTable(json, false);
 		})
 		.withFailureHandler(onFailure)
 		.fetchWeek(service.id, 0, true);
