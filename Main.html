@@ -1,47 +1,24 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
-		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
-        <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
-        <style>
-        form .error {
-            color: #ff0000;
-        }
-    </style>
-    <script>
-//    var script_url = <?= scriptUrl ?>;
-//					
-//			// Make an AJAX call to Google Script
-//			function insert_value() {
-//				$("#item-list").css("visibility", "hidden");
-//				document.getElementById("loader").style.visibility = "visible";
-//				$('#mySpinner').addClass('spinner');
-//				var id1 = $("#id").val();
-//				var name = $("#name").val();
-//				var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=insert";
-//				var request = jQuery.ajax({
-//					crossDomain: true,
-//					url: url,
-//					method: "GET",
-//					dataType: "jsonp"
-//				});
-//			}
-//			// print the returned data
-//			function ctrlq(e) {
-//				$("#item-list").html(e.result);
-//				$("#item-list").css("visibility", "visible");
-//				read_value();
-//			}
-			
-</script>
-<?!= include('GlobalJS'); ?>
-</head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+    </head>
 	<body>
-    	<?!= include('ServiceListPage'); ?>
-        <?!= include('ServiceDetailsPage'); ?>
-        <?!= include('CalendarPage'); ?>
-        <?!= include('ReservationPage'); ?>
+        <div id="loader" class="progress">
+                <div class="indeterminate"></div>
+            </div>
+        <div>
+            <h1><image id="logo" /></h1>
+        </div>
+	    <div>
+		    <div class="collection" id="service-list">
+                <?!= serviceList; ?>
+		    </div>
+	    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <?!= include('GlobalJS'); ?>
+    <?!= include('MainJS'); ?>
 	</body>
 </html>

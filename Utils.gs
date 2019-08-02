@@ -11,12 +11,6 @@ function include(File) {
   return HtmlService.createHtmlOutputFromFile(File).getContent();
 };
 
-//function getDayName(date, locale)
-//{
-//    var date = new Date(date);
-//    return date.toLocaleDateString(locale, { weekday: 'long' });        
-//}
-
 function getDayName(date)
 {
     var weekdays = ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat'];
@@ -29,19 +23,28 @@ Date.prototype.addDays = function(days) {
     return date;
 }
 
-function t()
-{
-  var cal = CalendarApp.getCalendarById("vdl7a88r3mjp71c7gi90bl58t0@group.calendar.google.com");
-  var events = cal.getEventsForDay(new Date());
-  for (var i = 0; i < events.length; i++) {
-    var event = events[i];
-    Logger.log('%s: %s - %s', event.getTitle(), event.getStartTime(), event.getEndTime());
-  }
-}
-
 function loadImageBytes()
 {
     var id = PropertiesService.getScriptProperties().getProperty("propLogoID");
     var bytes = DriveApp.getFileById(id).getBlob().getBytes();
     return Utilities.base64Encode(bytes);
+}
+
+function render(file, args, title)
+{
+  //template.scriptUrl = ScriptApp.getService().getUrl();
+  
+  var template = HtmlService.createTemplateFromFile(file);
+  
+  if (args) {
+    var k = Object.keys(args);
+    k.forEach(function(key) {
+     template[key] = args[key]; 
+    });
+  }
+  
+  var html = template.evaluate()
+  .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+  .setTitle(title);
+  return html;
 }

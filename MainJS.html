@@ -1,0 +1,14 @@
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    startProgress();
+    google.script.run
+		.withSuccessHandler( function(bytes){ showImage(bytes) })
+		.loadImageBytes();
+});
+
+function showImage(bytes){
+    document.getElementById("logo").src = "data:image/png;base64," + bytes; 
+    endProgress();
+}
+
+</script>

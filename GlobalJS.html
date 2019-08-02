@@ -1,19 +1,12 @@
 <script>
-
 function startProgress() 
 {
-    $.mobile.loading( "show", {
-            text: "Töltődik",
-            textVisible: false,
-            theme: $.mobile.loader.prototype.options.theme,
-            textonly: false,
-            html: ""
-    });
+    document.getElementById("loader").style.display = "block"; // to show
 }
 
 function endProgress()
 {
-	$.mobile.loading("hide");
+    document.getElementById("loader").style.display = "none"; // to hide 
 }
 
 function onFailure(error)
@@ -21,5 +14,4 @@ function onFailure(error)
 	endProgress();
 	alert(error.message);
 }
-
 </script>
