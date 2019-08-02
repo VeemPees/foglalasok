@@ -32,8 +32,6 @@ function loadImageBytes()
 
 function render(file, args, title)
 {
-  //template.scriptUrl = ScriptApp.getService().getUrl();
-  
   var template = HtmlService.createTemplateFromFile(file);
   
   if (args) {
