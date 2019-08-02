@@ -26,19 +26,15 @@ function doGet(e) {
     */
     
     Route.path("sd", renderServiceDetailsPage);
+    Route.path("cal", renderCalendarPage);
            
     if (Route[e.parameters.op]) {
-      return Route[e.parameters.op]();
+      return Route[e.parameters.op](e);
     } else {
       return renderMainServiceListPage();
     }
   } catch(e) {
     logException(e);
   }
-}
-
-function renderServiceDetailsPage()
-{
-  return render("ServiceDetailsPage", null, 'Kezelés');
 }
 

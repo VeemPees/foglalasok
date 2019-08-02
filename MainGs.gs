@@ -1,7 +1,7 @@
 function renderMainServiceListPage()
 {
   var list = fetchServices();
-  var htmlList = list.map(function(s) { return '<a href="' + ScriptApp.getService().getUrl() + '?op=sd" class="collection-item">' + s.name + '</a>'}).join('');
+  var htmlList = list.map(function(s) { return '<a href="' + ScriptApp.getService().getUrl() + '?op=sd&sid=' + s.id + '" class="collection-item">' + s.name + '</a>'}).join('');
   return render("Main", {serviceList: htmlList}, 'Időpont foglalás');
 }
 

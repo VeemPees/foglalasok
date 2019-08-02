@@ -30,7 +30,6 @@ function getSpreadsheetUrl()
 function openSpreadsheet()
 {
   var url = getSpreadsheetUrl();
-  Logger.log("Opening " + url);
   var ss=SpreadsheetApp.openByUrl(url);
   return ss;
 }
